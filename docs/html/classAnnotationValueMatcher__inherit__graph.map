@@ -1,0 +1,5 @@
+base referer
+rect $classAnnotationTopValueMatcher.html 5,454 219,534
+rect $classAnnotationValueInArrayMatcher.html 243,454 480,534
+rect $classParallelMatcher.html 173,182 299,278
+rect $classCompositeMatcher.html 161,6 311,134

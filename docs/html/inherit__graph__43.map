@@ -1,0 +1,4 @@
+base referer
+rect $interfaceDummyInterface.html 5,5 141,32
+rect $classExample.html 191,31 271,57
+rect $classParentExample.html 12,56 135,83

@@ -1,0 +1,4 @@
+base referer
+rect $classAnnotationValueMatcher.html 29,326 219,406
+rect $classParallelMatcher.html 61,182 187,278
+rect $classCompositeMatcher.html 49,6 199,134
