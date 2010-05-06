@@ -50,7 +50,7 @@ class MOC_Autoload {
      */
     public function addPlugin($extKey, $delegate = null) {
         if (!t3lib_extMgm::isLoaded($extKey, false)) {
-            throw new MOC_Autoload_Exception(sprintf('Extension "%s" is not laoded', $extKey));
+            throw new MOC_Autoload_Exception(sprintf('Extension "%s" is not loaded', $extKey));
         }
         
         if (empty($delegate) || !($delegate instanceof MOC_Autoload_Interface)) {
