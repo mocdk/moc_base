@@ -1,8 +1,0 @@
-base referer
-rect $classAnnotationMatcher.html 28,334 180,430
-rect $classAnnotationMorePairsMatcher.html 204,326 420,438
-rect $classAnnotationPairMatcher.html 444,334 620,430
-rect $classSimpleSerialMatcher.html 644,334 804,430
-rect $classCompositeMatcher.html 347,6 496,134
-rect $classNestedAnnotationMatcher.html 5,502 203,582
-rect $classAnnotationMoreValuesMatcher.html 609,486 839,598

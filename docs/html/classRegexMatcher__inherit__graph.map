@@ -1,7 +1,0 @@
-base referer
-rect $classAnnotationDoubleQuotedStringMatcher.html 5,166 296,262
-rect $classAnnotationIntegerMatcher.html 320,166 520,262
-rect $classAnnotationNumberMatcher.html 544,166 749,262
-rect $classAnnotationSingleQuotedStringMatcher.html 773,166 1056,262
-rect $classAnnotationStaticConstantMatcher.html 1080,166 1331,262
-rect $classConstantMatcher.html 1355,166 1491,262

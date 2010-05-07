@@ -1,8 +1,0 @@
-base referer
-rect $classRegexMatcher.html 7,132 124,159
-rect $classAnnotationDoubleQuotedStringMatcher.html 173,6 464,32
-rect $classAnnotationIntegerMatcher.html 219,56 419,83
-rect $classAnnotationNumberMatcher.html 216,107 421,134
-rect $classAnnotationSingleQuotedStringMatcher.html 177,158 460,184
-rect $classAnnotationStaticConstantMatcher.html 193,208 444,235
-rect $classConstantMatcher.html 251,259 387,286
