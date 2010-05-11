@@ -219,13 +219,13 @@ class MOC_Log {
 		return $className;
     }
 
-	/**
+	/** 
 	 * Initialize defaults 
 	 * 
 	 */
 	protected static function initialize() {		
 		// Log level
-		if (is_null(self::$logLevel)) {
+		if (is_null(self::$logLevel) && empty($_SERVER['HTTP_HOST'])) {
 			$Opts = new Zend_Console_Getopt(array(
 		 		'moc_log_level|log_level=s' => 'The log level',
 			));
@@ -242,11 +242,10 @@ class MOC_Log {
 
 			    self::setLogLevel(constant($constant_name));
 			}
-
-            // Always default to LOG_WARNING
-            if (empty(self::$logLevel)) {
-                self::setLogLevel(LOG_WARNING);
-            }
+        }
+        // Always default to LOG_WARNING
+        if (empty(self::$logLevel)) {
+            self::setLogLevel(LOG_WARNING);
         }
 	}
 
