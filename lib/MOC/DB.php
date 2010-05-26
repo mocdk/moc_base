@@ -34,33 +34,6 @@ class MOC_DB {
 	}
 	
 	/**
-	 * Generate SQL conditions from a array of key/values
-	 *
-	 * @param array $array
-	 * @param string $operator
-	 * @return string
-	 */
-	public static function conditions($array, $operator = 'AND') {
-	    if (!is_array($array) || empty($array)) {
-	        throw new MOC_DB_Exception('Parameter must be a non-empty array');
-	    }
-	    $conditions = array();
-	    foreach ($array as $key => $value) {
-	        if (is_null($value)) {
-	            $conditions[] = sprintf('%s IS NULL', $key);
-	        } elseif (is_numeric($value)) {
-	            $conditions[] = sprintf('%s = %s', $key, $value);
-	        } elseif (is_string($value)) {
-	            $conditions[] = sprintf('%s = "%s"', $key, mysql_real_escape_string($value));
-	        } else {
-	            throw new MOC_DB_Exception(sprintf('Unknown value type: %s for key %s', gettype($value), $key));
-	        }
-        }
-        
-        return join($operator, $conditions);
-	}
-	
-	/**
 	 * Remove keys from $data that is not present as a column in $table
 	 *
 	 * @param string $table
