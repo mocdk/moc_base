@@ -456,7 +456,12 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
     protected function __configVarNames($name) {
         if (is_string($name)) {
             if (strpos($name, ".")) {
-                return explode(".", $name);
+				// Prevent double dots
+				$name = str_replace('..', '.', $name);
+				// Prevent trailing dots
+				$name = trim(trim($name, '.'));
+				// Return array path
+				return explode(".", $name);
             }
             return array($name);
         }
