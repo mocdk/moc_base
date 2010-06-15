@@ -1,7 +1,7 @@
 <?php
 /**
  * MOC Configuration class
- * 
+ *
  * @author Christian Winther <cwin@mocsystems.com>
  * @since 13.11.2009
  * @version $Revision$
@@ -12,14 +12,14 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Data storage
-     * 
+     *
      * @var array
      */
     protected $data = array();
 
     /**
      * Initalize object with data
-     * 
+     *
      * @param array $data
      */
     public function __construct($data = array()) {
@@ -78,7 +78,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Get the RAW data array
-     * 
+     *
      * @return array
      */
     public function getAll() {
@@ -87,7 +87,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Check if a key exists
-     * 
+     *
      * @param string $key
      */
     public function check($key) {
@@ -127,7 +127,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Delete a configuration key
-     * 
+     *
      * @param string $key
      */
     public function delete($key) {
@@ -177,7 +177,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Check if a configuration key is present, if not, throw an MOC_Configuration_Exception
-     * 
+     *
      * @param string $key
      */
     public function checkKeyPresence($key) {
@@ -188,7 +188,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Validate a configuration key
-     * 
+     *
      * @param string $key
      * @param string|array $method
      * @return boolean
@@ -201,7 +201,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 		if (!is_callable($method)) {
 			return false;
 		}
-		
+
         return call_user_func($method, $this->get($key));
     }
 
@@ -217,7 +217,14 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
         }
         foreach ($config as $names => $value) {
             $name = $this->__configVarNames($names);
+
             switch (count($name)) {
+                case 7:
+                    $this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]][$name[5]][$name[6]] = $value;
+                    break;
+                case 6:
+                    $this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]][$name[5]] = $value;
+                    break;
                 case 5:
                     $this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]] = $value;
                     break;
@@ -234,14 +241,16 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                     $this->data[$name[0]] = $value;
                     break;
                 default:
+                	print "TEST";
+                	print_r($name);
                     throw new MOC_Configuration_Exception(sprintf('Unable to set the value. Depth is invalid ("%s")', count($name)));
             }
         }
-    }    
+    }
 
     /**
      * Set value of $path if its not defined already
-     * 
+     *
      * @param mixed $path
      * @param mixed $value
      */
@@ -254,7 +263,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Filter a simple array on $itemKey if value not in $allowed
-     * 
+     *
      * @param string $path The path to the array
      * @param string $itemKey The key to use for comparison
      * @param mixed $allowed List of items that the value of $itemKey must match
@@ -266,7 +275,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
         }
 
         $filtered = 0;
-        
+
 		if (empty($path)) {
 			$pathValues = $this->getAll();
 		}
@@ -275,7 +284,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 		if (empty($pathValues)) {
 			return 0;
 		}
-		
+
         foreach ($pathValues as $key => $value) {
             if (false === array_search($value[$itemKey], $allowed)) {
                 $this->delete($path . '.' . $key);
@@ -290,7 +299,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
     /**
      * Extract a list of keys from current object and return them in a new
      * MOC_Configuration object
-     * 
+     *
      * @param array $keys
      * @return MOC_Configuration
      */
@@ -308,7 +317,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Merge an array of settings into the current setup
-     * 
+     *
      * @param array $settings
      */
     public function merge($settings) {
@@ -321,7 +330,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Load configuration data from globals ExtConf
-     * 
+     *
      * @param string $extKey
      * @param boolean $return If true the settings will be returned, else its merged into current settings
      */
@@ -348,7 +357,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Build a path key from an array
-     * 
+     *
      * @param array $pathKeys
      * @return string
      */
@@ -358,8 +367,8 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Check if offset exists
-     * 
-     * @see ArrayAccess 
+     *
+     * @see ArrayAccess
      * @param mixed $offset
      * @return boolean
      */
@@ -369,9 +378,9 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Get offset value
-     * 
+     *
      * @see ArrayAccess
-     * @param mixed $offset 
+     * @param mixed $offset
      * @return mixed
      */
     public function offsetGet($offset) {
@@ -380,8 +389,8 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Set offset value
-     * 
-     * @see ArrayAccess 
+     *
+     * @see ArrayAccess
      * @param mixed $offset
      * @param mixed $value
      */
@@ -391,8 +400,8 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Unset offset
-     * 
-     * @see ArrayAccess 
+     *
+     * @see ArrayAccess
      * @param mixed $offset
      */
     public function offsetUnset($offset) {
@@ -401,7 +410,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Count elements of an object
-     * 
+     *
      * @see Countable
      * @return integer
      */
@@ -411,7 +420,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Serialize data
-     * 
+     *
      * @see Serializable
      * @return array
      */
@@ -421,7 +430,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Unserialize data
-     * 
+     *
      * @see Serializable
      * @param string $data
      */
@@ -431,7 +440,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Get itrator to traversable
-     * 
+     *
      * @see IteratorAggregate
      * @return array
      */
@@ -441,7 +450,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 
     /**
      * Called when object is cloned
-     * 
+     *
      */
     public function __clone() {
 
