@@ -71,6 +71,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                 break;
             default:
                 return MOC_Array::classicExtract($this->data, $var);
+                //throw new MOC_Configuration_Exception(sprintf('Unable to get the key. Depth is invalid ("%s")', count($name)));
         }
 
         return $default;
@@ -120,6 +121,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                 default:
                     $exists = MOC_Array::check($this->data, $key);
                     break;
+                    //throw new MOC_Configuration_Exception(sprintf('Unable to check if key exists. Depth is invalid ("%s")', count($name)));
             }
         }
 
@@ -218,7 +220,6 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
         }
         foreach ($config as $names => $value) {
             $name = $this->__configVarNames($names);
-
             switch (count($name)) {
                 case 7:
                     $this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]][$name[5]][$name[6]] = $value;
@@ -469,11 +470,16 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 				// Prevent trailing dots
 				$name = trim(trim($name, '.'));
 				// Return array path
-				return explode(".", $name);
+				$name = explode(".", $name);
             }
             // Make sure to get the key index back to 0...n (without holes left by MOC_Array::filter)
-            return array_values($v);
+            $name = array_values($name);
         }
+        
+        if (!is_array($name)) {
+            $name = array($name);
+        }
+        
         return $name;
     }
 }
