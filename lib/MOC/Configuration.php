@@ -70,7 +70,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                 }
                 break;
             default:
-                throw new MOC_Configuration_Exception(sprintf('Unable to get the key. Depth is invalid ("%s")', count($name)));
+                return MOC_Array::classicExtract($this->data, $var);
         }
 
         return $default;
@@ -118,7 +118,8 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                         is_array($this->data[$name[0]][$name[1]][$name[2]]) && array_key_exists($name[3], $this->data[$name[0]][$name[1]][$name[3]]) && is_array($this->data[$name[0]][$name[1]][$name[2]][$name[3]]) && array_key_exists($name[4], $this->data[$name[0]][$name[1]][$name[2]][$name[3]]));
                     break;
                 default:
-                    throw new MOC_Configuration_Exception(sprintf('Unable to check if key exists. Depth is invalid ("%s")', count($name)));
+                    $exists = MOC_Array::check($this->data, $key);
+                    break;
             }
         }
 
@@ -241,8 +242,6 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                     $this->data[$name[0]] = $value;
                     break;
                 default:
-                	print "TEST";
-                	print_r($name);
                     throw new MOC_Configuration_Exception(sprintf('Unable to set the value. Depth is invalid ("%s")', count($name)));
             }
         }
@@ -472,7 +471,8 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 				// Return array path
 				return explode(".", $name);
             }
-            return array($name);
+            // Make sure to get the key index back to 0...n (without holes left by MOC_Array::filter)
+            return array_values($v);
         }
         return $name;
     }
