@@ -42,7 +42,6 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
         if (empty($name)) {
             return $this->data;
         }
-
         switch (count($name)) {
             case 5:
                 if (isset($this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]])) {
@@ -470,23 +469,20 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
      * @return array Name separated in items through dot notation
      */
     protected function __configVarNames($name) {
-        if (is_string($name)) {
-            if (strpos($name, ".")) {
-				// Prevent double dots
-				$name = str_replace('..', '.', $name);
-				// Prevent trailing dots
-				$name = trim(trim($name, '.'));
-				// Return array path
-				$name = explode(".", $name);
-            }
-            // Make sure to get the key index back to 0...n (without holes left by MOC_Array::filter)
-            $name = array_values($name);
+        if (is_string($name) && false !== strpos($name, ".")) {
+			// Prevent double dots
+			$name = str_replace('..', '.', $name);
+			// Prevent trailing dots
+			$name = trim(trim($name, '.'));
+			// Return array path
+			$name = explode(".", $name);
         }
         
         if (!is_array($name)) {
             $name = array($name);
         }
         
-        return $name;
+        // Make sure to get the key index back to 0...n (without holes left by MOC_Array::filter)
+        return array_values($name);
     }
 }
