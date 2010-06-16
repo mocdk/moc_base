@@ -119,9 +119,14 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                         is_array($this->data[$name[0]][$name[1]][$name[2]]) && array_key_exists($name[3], $this->data[$name[0]][$name[1]][$name[3]]) && is_array($this->data[$name[0]][$name[1]][$name[2]][$name[3]]) && array_key_exists($name[4], $this->data[$name[0]][$name[1]][$name[2]][$name[3]]));
                     break;
                 default:
-                    $exists = MOC_Array::check($this->data, $key);
+                    $exists = $exists && MOC_Array::check($this->data, $key);
                     break;
                     //throw new MOC_Configuration_Exception(sprintf('Unable to check if key exists. Depth is invalid ("%s")', count($name)));
+            }
+            
+            // Don't bother checking multiple keys we already got a false check
+            if (!$exists) {
+                return $exists;
             }
         }
 
@@ -243,7 +248,9 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                     $this->data[$name[0]] = $value;
                     break;
                 default:
-                    throw new MOC_Configuration_Exception(sprintf('Unable to set the value. Depth is invalid ("%s")', count($name)));
+                    $this->data = MOC_Array::insert($this->data, join('.', $name), $value);
+                    break;
+                    //throw new MOC_Configuration_Exception(sprintf('Unable to set the value. Depth is invalid ("%s")', count($name)));
             }
         }
     }
