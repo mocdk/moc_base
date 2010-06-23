@@ -222,8 +222,21 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
         if (!is_array($config)) {
             $config = array($config => $value);
         }
+        
         foreach ($config as $names => $value) {
             $name = $this->__configVarNames($names);
+            
+            // Make sure to expand nested array keys too!
+            // @todo: Refactor
+            if (is_array($value)) {
+                foreach ($value AS $k => $v) {
+                    $key = $name;
+                    $key[] = $k;
+                    $this->set(join('.', $key), $v);
+                }
+                continue;
+            }
+            
             switch (count($name)) {
                 case 7:
                     $this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]][$name[5]][$name[6]] = $value;
