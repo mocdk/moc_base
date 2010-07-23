@@ -68,6 +68,37 @@ class MOC_DB {
 	public static function commitTransaction() {
 		$GLOBALS['TYPO3_DB']->sql_query('COMMIT');
 	}
+
+	/**
+	 * A wrapper for building INSERT ... ON DUPLICATE KEY UPDATE sql
+	 *
+	 * @see \error
+	 * @see http://dev.mysql.com/doc/refman/5.1/en/insert-on-duplicate.html
+	 * @param string $table
+	 * @param array $insert_data
+	 * @param array|null $update_data
+	 * @return boolean true If successfull else an error string
+	 */
+	public static function insertOrUpdate($table, $insert_data, $update_data = null) {
+		// Insert is 100% default (we are just going to append some stuff to it later on)
+		$insert_sql = $GLOBALS['TYPO3_DB']->INSERTquery($table, $insert_data);
+		
+		// Update is a bit different - we want normal UPDATE statement with a blank "condition"
+		// If no update_data is provided, just use the insert_data instead
+		$update_sql = $GLOBALS['TYPO3_DB']->UPDATEquery($table, '', $update_data ? $update_data : $insert_data);
+		// The "UPDATE $table SET" part is not needed, so lets remove it
+		$update_sql = str_replace(sprintf('UPDATE %s SET', $table), '', $update_sql);
+		
+		// Construct the full query
+		$query = sprintf('%s ON DUPLICATE KEY UPDATE %s', $insert_sql, $update_sql);
+		// And execute it
+		$GLOBALS['TYPO3_DB']->sql_query($query);
+		
+		// Check for errors
+		$error = MOC_DB::error();
+		// Return true if no error happened
+		return $error === false ? true : $error;
+	}
 	
 	/**
 	 * Check a list of tables for transaction support

@@ -57,9 +57,9 @@ class MOC_Autoload {
             $delegate = new MOC_Autoload_Pear();
         }
 
-        $path = t3lib_extMgm::extPath($extKey, '/lib/');
+        $path = t3lib_extMgm::extPath($extKey, $delegate->getBaseFolder());
         if (!file_exists($path)) {
-            throw new MOC_Autoload_Exception(sprintf('Extension "%s" does not have a "/lib" directory (%s)', $extKey, $path));
+            throw new MOC_Autoload_Exception(sprintf('Extension "%s" does not have a "%s" directory (%s)', $extKey, $delegate->getBaseFolder(), $path));
         }
 
         self::addPath($path, $delegate);

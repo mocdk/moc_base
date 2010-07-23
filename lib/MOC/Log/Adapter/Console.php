@@ -69,10 +69,10 @@ class MOC_Log_Adapter_Console extends MOC_Log_Adapter_Abstract {
     public function add($severity, $message, $ext_key = null, $additional_info = null) {
         switch ($severity) {
             case LOG_DEBUG:
-                $message = sprintf('[::GRAY::DEBUG::NONE::]  %s', $message);
+                $message = sprintf('[::GRAY::DEBUG::NONE::] %s', $message);
                 break;
             case LOG_INFO:
-                $message = sprintf('[::BLUE::INFO::NONE::]   %s', $message);
+                $message = sprintf('[::BLUE::INFO::NONE::] %s', $message);
                 break;
             case LOG_NOTICE:
                 $message = sprintf('[::GREEN::NOTICE::NONE::] %s', $message);

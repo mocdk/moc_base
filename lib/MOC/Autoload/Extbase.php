@@ -9,7 +9,7 @@
  * @modifiedby $LastChangedBy$
  * @lastmodified $Date$
  */
-class MOC_Autoload_Pear implements MOC_Autoload_Interface {
+class MOC_Autoload_Extbase implements MOC_Autoload_Interface {
 
     /**
      * Convert underscores to DIRECTORY_SEPARATOR
@@ -22,6 +22,6 @@ class MOC_Autoload_Pear implements MOC_Autoload_Interface {
     }
 
 	public function getBaseFolder() {
-		return 'lib';
+		return 'Classes';
 	}
 }
