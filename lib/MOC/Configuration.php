@@ -416,7 +416,6 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
      * @return boolean
      */
     public function offsetExists($offset) {
-	var_dump($offset);
         return $this->check($offset);
     }
 
