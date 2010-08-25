@@ -85,6 +85,30 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
         return $this->data;
     }
 
+	/**
+	 * Convert a MOC_Configuration object and all nested objects
+	 * to an php array
+	 *
+	 * @param mixed $object
+	 * @return array
+	 */
+	public function toArray($object = null) {
+		if (is_null($object)) {
+			$object = $this;
+		}
+		if (!is_object($object) && !is_array($object)) {
+			return $object;
+		}
+		if (is_object($object)) {
+			if ($object instanceof MOC_Configuration) {
+				$object = $object->getAll();
+				} else {
+				$object = get_object_vars($object);
+			}
+		}
+	    return array_map(array($this, 'toArray'), $object);
+	}
+
     /**
      * Check if a key exists
      *
@@ -122,7 +146,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                     break;
                     //throw new MOC_Configuration_Exception(sprintf('Unable to check if key exists. Depth is invalid ("%s")', count($name)));
             }
-            
+
             // Don't bother checking multiple keys we already got a false check
             if (!$exists) {
                 return $exists;
@@ -222,10 +246,10 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
         if (!is_array($config)) {
             $config = array($config => $value);
         }
-        
+
         foreach ($config as $names => $value) {
             $name = $this->__configVarNames($names);
-            
+
             // Make sure to expand nested array keys too!
             // @todo: Refactor
             if (is_array($value)) {
@@ -236,7 +260,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                 }
                 continue;
             }
-            
+
             switch (count($name)) {
                 case 7:
                     $this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]][$name[5]][$name[6]] = $value;
@@ -392,6 +416,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
      * @return boolean
      */
     public function offsetExists($offset) {
+	var_dump($offset);
         return $this->check($offset);
     }
 
@@ -464,7 +489,7 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
      * @return array
      */
     public function getIterator() {
-        return new ArrayIterator($this);
+        return new ArrayIterator($this->getAll());
     }
 
     /**
@@ -472,8 +497,29 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
      *
      */
     public function __clone() {
-
+		return clone $this;
     }
+
+	/**
+	 * Set called on the object
+	 *
+	 * @param mixed $key
+	 * @param mixed $value
+	 * @return void
+	 */
+	public function __set($key, $value) {
+		$this->set($key, $value);
+	}
+
+	/**
+	 * Get called on the object
+	 *
+	 * @param mixed $key
+	 * @return mixed
+	 */
+	public function __get($key) {
+		return $this->get($key);
+	}
 
     /**
      * Checks $name for dot notation to create dynamic Configure::$var as an array when needed.
@@ -490,11 +536,11 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
 			// Return array path
 			$name = explode(".", $name);
         }
-        
+
         if (!is_array($name)) {
             $name = array($name);
         }
-        
+
         // Make sure to get the key index back to 0...n (without holes left by MOC_Array::filter)
         return array_values($name);
     }
