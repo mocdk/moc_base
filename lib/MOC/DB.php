@@ -69,6 +69,16 @@ class MOC_DB {
 		$GLOBALS['TYPO3_DB']->sql_query('COMMIT');
 	}
 
+	/** 
+	 * Escape a value for MySQL
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function escape($string) {
+	    return mysql_real_escape_string($string);
+	}
+	
 	/**
 	 * Change TYPO3_DB out with MOC_DB_Logger
 	 *

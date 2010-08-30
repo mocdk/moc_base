@@ -1,7 +1,7 @@
 <?php
 /**
  * MOC Log Adepter Console
- * 
+ *
  * @author Christian Winther <cwin@mocsystems.com>
  * @version $Revision$
  * @modifiedby $LastChangedBy$
@@ -42,7 +42,7 @@ class MOC_Log_Adapter_Console extends MOC_Log_Adapter_Abstract {
 	public function initialize() {
 		// Make sure to end output buffer!
 		ob_end_flush();
-		
+
 		if (!array_key_exists('colorize', $this->options)) {
 			// We are running from cron (env doesn't have a SSH_CLIENT value)
 			if (!isset($_SERVER['SSH_CLIENT'])) {
@@ -53,14 +53,14 @@ class MOC_Log_Adapter_Console extends MOC_Log_Adapter_Abstract {
 				));
 				$colorize = MOC_Misc::evaluateBoolean($Opts->getOption('moc_log_colorize'));
 			}
-			
+
 			$this->options['colorize'] = $colorize;
 		}
 	}
 
     /**
      * Add a new log event
-     * 
+     *
      * @param integer $severity LOG_* or MOC_LOG constants
      * @param string $message
      * @param string $ext_key
@@ -69,7 +69,7 @@ class MOC_Log_Adapter_Console extends MOC_Log_Adapter_Abstract {
     public function add($severity, $message, $ext_key = null, $additional_info = null) {
         switch ($severity) {
             case LOG_DEBUG:
-                $message = sprintf('[::GRAY::DEBUG::NONE::] %s', $message);
+                $message = sprintf('[::GRAY::DEBUG::NONE::]  %s', $message);
                 break;
             case LOG_INFO:
                 $message = sprintf('[::BLUE::INFO::NONE::] %s', $message);
@@ -101,5 +101,6 @@ class MOC_Log_Adapter_Console extends MOC_Log_Adapter_Abstract {
         }
 
         echo $message . "\n";
+	unset($message);
     }
 }
