@@ -5,17 +5,17 @@
  * Loosely based on my work at the CakePHP project
  *
  * @author Christian Winther <cwin@mocsystems.com>
- * @since 26.05.2010 
+ * @since 26.05.2010
  */
 class MOC_DB_Condition {
     const START_QUOTE = '`';
-	
+
 	const END_QUOTE = '`';
-    
+
     public static $QUOTE_FIELDS = true;
-    
+
 	protected static $sqlOps = array('like', 'ilike', 'or', 'not', 'in', 'between', 'regexp', 'similar to');
-	
+
     /**
      * Creates a WHERE clause by parsing given conditions data.  If an array or string
      * conditions are provided those conditions will be parsed and quoted.  If a boolean
@@ -27,7 +27,7 @@ class MOC_DB_Condition {
      * @return string SQL fragment
      * @access public
      */
-    public static function build($conditions, $quoteValues = true, $where = true) {
+    public static function build($conditions, $quoteValues = true, $where = false) {
         $clause = $out = '';
         if ($where) {
             $clause = ' WHERE ';
@@ -59,7 +59,7 @@ class MOC_DB_Condition {
     	}
     	return $clause . $conditions;
     }
-	
+
     /**
      * Creates a WHERE clause by parsing given conditions array.  Used by DboSource::conditions().
      *
@@ -157,7 +157,7 @@ class MOC_DB_Condition {
 		}
 		return $out;
 	}
-	
+
 	/**
      * Extracts a Model.field identifier and an SQL condition operator from a string, formats
      * and inserts values, and composes them into an SQL snippet.
@@ -166,7 +166,7 @@ class MOC_DB_Condition {
      * @param mixed $value The value(s) to be inserted in the string
      * @return string
      */
-    private static function parseKey($key, $value) {    		
+    private static function parseKey($key, $value) {
     		$operatorMatch = '/^((' . implode(')|(', self::$sqlOps);
     		$operatorMatch .= '\\x20)|<[>=]?(?![^>]+>)\\x20?|[>=!]{1,3}(?!<)\\x20?)/is';
     		$bound = (strpos($key, '?') !== false || (is_array($value) && strpos($key, ':') !== false));
@@ -238,7 +238,7 @@ class MOC_DB_Condition {
     		}
     		return "{$key} {$operator} {$value}";
     	}
-	
+
     /**
      * Returns a quoted name of $data for use in an SQL statement.
      * Strips fields out of SQL functions before quoting.
@@ -278,7 +278,7 @@ class MOC_DB_Condition {
 		}
 		return $data;
 	}
-	
+
     /**
      * Prepares a value, or an array of values for database queries by quoting and escaping them.
      *
@@ -300,14 +300,14 @@ class MOC_DB_Condition {
 				return $data->value;
 			}
 		}
-		
+
 		if ($data === null || (is_array($data) && empty($data))) {
         	return 'NULL';
 		}
 		if ($data === '' && $column !== 'integer' && $column !== 'float' && $column !== 'boolean') {
 			return  "''";
 		}
-		
+
 		if (empty($column)) {
 			$column = self::introspectType($data);
 		}
@@ -332,7 +332,7 @@ class MOC_DB_Condition {
 		}
 		return $data;
 	}
-	
+
 	/**
      * Guesses the data type of an array
      *
@@ -387,7 +387,7 @@ class MOC_DB_Condition {
 		}
 		return 'string';
 	}
-	
+
     /**
      * Translates between PHP boolean values and Database (faked) boolean values
      *
@@ -404,7 +404,7 @@ class MOC_DB_Condition {
     		return !empty($data);
     	}
     }
-    
+
 	/**
      * Quotes Model.fields
      *
@@ -414,7 +414,7 @@ class MOC_DB_Condition {
     private static function quoteFields($conditions) {
     	$start = $end  = null;
 	    $original = $conditions;
-     
+
 	    $start = $end = preg_quote('`');
 	    $conditions = str_replace(array($start, $end), '', $conditions);
 	    $conditions = preg_replace_callback('/(?:[\'\"][^\'\"\\\]*(?:\\\.[^\'\"\\\]*)*[\'\"])|([a-z0-9_' . $start . $end . ']*\\.[a-z0-9_' . $start . $end . ']*)/i', array('MOC_DB_Condition', '__quoteMatchedField'), $conditions);
@@ -423,7 +423,7 @@ class MOC_DB_Condition {
 	    }
 	    return $original;
 	}
-	
+
 	/**
      * Auxiliary function to quote matches `Model.fields` from a preg_replace_callback call
      *

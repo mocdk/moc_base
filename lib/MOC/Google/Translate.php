@@ -8,16 +8,68 @@
  */
 class MOC_Google_Translate {
 
-	public static $hit_rate = 25;
+	/**
+	 * Amount of curl requests until the script sleeps
+	 * every \$throttle_sleep seconds
+	 *
+	 * @var integer
+	 */
+	public static $throttle_rate = 25;
 
-	public static $sleep_time = 2;
+	/**
+	 * Number of seconds the script sleeps each time
+	 * the \$throttle_rate has been reached
+	 *
+	 * @var integer
+	 */
+	public static $throttle_sleep = 2;
 
+	/**
+	 * List of ips to "randomly" switch between
+	 * each request.
+	 * If left empty, this feature will not be used, and
+	 * cURL will just select the default interface
+	 *
+	 * @var array
+	 */
+	public static $ips = array();
+
+	/**
+	 * A list of custom cURL options
+	 *
+	 * @var array
+	 */
+	public static $CURL_OPTIONS = array();
+
+	/**
+	 * An optional google translate API key
+	 *
+	 * Will help you improve query rates
+	 *
+	 * @var string
+	 */
 	public static $API_KEY;
 
+	/**
+	 * In case google cannot guess the source languages,
+	 * the default source language will be used in place
+	 *
+	 * @var string
+	 */
 	public static $DEFAULT_SOURCE_LANGUAGE = 'da';
 
+	/**
+	 * Number of queries send to google translate
+	 *
+ 	 * @var integer
+	 */
 	protected static $hits = 0;
 
+	/**
+	 * A cached cURL handle
+	 *
+	 * @var object
+	 */
 	protected static $curl_handle;
 
 	/**
@@ -51,11 +103,11 @@ class MOC_Google_Translate {
 	 * @param string 		$from   The language the term is written in, leave empty for google to detect
 	 * @return string		 		Return format depends on $to data type
 	 */
-   protected static function query($term, $to, $from = '') {
+   public static function query($term, $to, $from = '') {
  		self::$hits++;
-		if ((self::$hits % self::$hit_rate) === 0) {
-			MOC_Log::add(LOG_NOTICE, sprintf('Google translate throttle, sleeping for %d second', self::$sleep_time));
-			sleep(self::$sleep_time);
+		if ((self::$hits % self::$throttle_rate) === 0) {
+			MOC_Log::add(LOG_NOTICE, sprintf('Google translate throttle, sleeping for %d second(s)', self::$throttle_sleep));
+			sleep(self::$throttle_sleep);
 		}
 
 		if (empty(self::$curl_handle)) {
@@ -64,7 +116,17 @@ class MOC_Google_Translate {
 			curl_setopt(self::$curl_handle, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt(self::$curl_handle, CURLOPT_FORBID_REUSE, 0);
 			curl_setopt(self::$curl_handle, CURLOPT_FRESH_CONNECT, 0);
-			curl_setopt(self::$curl_handle, CURLOPT_MAXCONNECTS, (self::$hit_rate * 5));
+			curl_setopt(self::$curl_handle, CURLOPT_MAXCONNECTS, (self::$throttle_rate * 5));
+		}
+
+		if (!empty(self::$ips)) {
+			$ip = self::$ips[array_rand(self::$ips)];
+			MOC_Log::add(LOG_NOTICE, sprintf('Google translate - using cURL interface "%s"', $ip));
+			curl_setopt(self::$curl_handle, CURLOPT_INTERFACE, $ip);
+		}
+
+		if (!empty(self::$CURL_OPTIONS)) {
+			curl_setopt_array(self::$curl_handle, self::$CURL_OPTIONS);
 		}
 
 		// We need to use POST to avoid long query strings!
@@ -88,7 +150,7 @@ class MOC_Google_Translate {
 				return utf8_decode($content['responseData']['translatedText']);
 		    default:
 				// Retry with DEFAULT_SOURCE_LANGUAGE if google can't guess language
-				if ($content['responseDetails'] === 'could not reliably detect source language') {
+				if (empty($from) && ($content['responseDetails'] === 'could not reliably detect source language')) {
 					return self::query($term, $to, self::$DEFAULT_SOURCE_LANGUAGE);
 				}
 				// Fatal error: Google bailed on us :(
