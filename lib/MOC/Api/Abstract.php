@@ -1,9 +1,9 @@
 <?php
 /**
  * MOC Api Abstract class
- * 
+ *
  * All service objects should extend this class
- * 
+ *
  * @author Christian Winther
  * @since 26.11.2009
  * @version $Revision$
@@ -13,35 +13,35 @@
 abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
     /**
      * MOC Configuration instance
-     * 
+     *
      * @var MOC_Configuration
      */
     public $Configuration;
 
     /**
      * Prefix to strip from API method names
-     * 
+     *
      * @var string
      */
     protected $apiPrefix;
 
     /**
      * Enforce check if a validation method exists
-     * 
+     *
      * @var boolean
      */
     protected $enforceValidation = true;
 
     /**
      * PHP method used to invoke the method
-     * 
+     *
      * @var string
      */
     protected $invokeMethod = 'call_user_func';
 
     /**
      * Default constructor
-     * 
+     *
      * Initializes MOC_Configuration object
      */
     public function __construct() {
@@ -53,10 +53,10 @@ abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
 
     /**
      * Method invoked by MOC_Api_Service
-     * 
+     *
      * If the method returns true, the MOC_Api_Service object calls
      * invoke on this object
-     * 
+     *
      * @return boolean
      */
     public function provides($method) {
@@ -64,13 +64,13 @@ abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
     }
 
     /**
-     * Request to invoke an API method from the MOC_Api_Service 
-     * 
+     * Request to invoke an API method from the MOC_Api_Service
+     *
      * 1) validate (Required: Validate parameters)
      * 2) initialize (Optional: intiailize objects and variables for invoke)
      * 3) invoke (Required: Of the actual method)
      * 4) after (Optional: Post process the data from invoke)
-     * 
+     *
      * @param string $method
      * @param array $data
      * @return string
@@ -90,7 +90,7 @@ abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
         }
 
         // Run global initialize
-        $this->initialize();
+        $this->initialize($data);
 
         // Intialize method if needed
         $this->runInitializeMethod($method);
@@ -104,7 +104,7 @@ abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
 
     /**
      * Boostrap method
-     * 
+     *
      * Called as the last thing in __construct
      */
     protected function bootstrap() {
@@ -113,7 +113,7 @@ abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
 
     /**
      * Initialize method
-     * 
+     *
      * Called on every invoke method
      */
     protected function initialize() {
@@ -122,9 +122,9 @@ abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
 
     /**
      * Different ways to invoke the service objects on
-     * 
+     *
      * Choose your flavor
-     * 
+     *
      * @param mixed $callback Valid PHP callback
      * @param array $params
      * @return mixed
@@ -142,7 +142,7 @@ abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
 
     /**
      * Executes a validation method for the given method
-     * 
+     *
      * @param string $method
      * @param $data
      * @return boolean
@@ -162,9 +162,9 @@ abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
 
     /**
      * Run the corresponding intialize method for the current method call
-     * 
+     *
      * This method wont complain if the method doesnt exists
-     * 
+     *
      * @param string $method
      */
     protected function runInitializeMethod($method) {
@@ -176,9 +176,9 @@ abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
 
     /**
      * Run the corresponding after method for the current method call
-     * 
+     *
      * This methond wont complain if the method doesnt exists
-     * 
+     *
      * @param string $method
      * @param mixed $data
      * @return mixed
@@ -193,13 +193,13 @@ abstract class MOC_Api_Abstract implements MOC_Api_Service_Interface {
 
     /**
      * Convert an API method to an internal method
-     * 
+     *
      * - Removes PREFIX from name
      * - Replaces all dots with spaces
      * - UpperCamelCases all words
      * - Replaces all spaces with nothing
      * - Prefixes name with "execute""
-     * 
+     *
      * @param string $name
      * @return string
      */

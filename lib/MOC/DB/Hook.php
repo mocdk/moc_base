@@ -1,7 +1,7 @@
 <?php
 /**
  * tx_tcforum TYPO3 db callback / hook class
- *  
+ *
  * @author Christian Winther <cwin@mocsystems.com>
  * @version $Revision$
  * @modifiedby $LastChangedBy$
@@ -10,24 +10,24 @@
  */
 class MOC_DB_Hook {
     protected static $tables = array();
-    
+
     /**
      * List of tables this class should handle
-     * 
+     *
      * @var array
      */
     private static $tables = array('tx_idagroups_group');
-    
+
     public static function bind() {
         $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'MOC_DB_Hook';
     }
-    
+
     /**
      * TYPO3 hook
-     * 
+     *
      * Called when any database operation has been executed
-     * 
-     * @param string $status insert / update 
+     *
+     * @param string $status insert / update
      * @param sting $table
      * @param integer $id
      * @param array $fieldArray List of fields that was changed in the data operation
@@ -39,7 +39,7 @@ class MOC_DB_Hook {
 
     /**
      * TYPO3 hook
-     * 
+     *
      * @param array $incomingFieldArray
      * @param string $table
      * @param string|integer $id
@@ -51,7 +51,7 @@ class MOC_DB_Hook {
 
     /**
      * TYPO3 hook
-     * 
+     *
      * @param string $status
      * @param string $table
      * @param string|intenger $id
@@ -64,7 +64,7 @@ class MOC_DB_Hook {
 
     /**
      * TYPO3 hook
-     * 
+     *
      * @param string $command
      * @param string $table
      * @param integer $id
@@ -77,7 +77,7 @@ class MOC_DB_Hook {
 
     /**
      * TYPO3 hook
-     * 
+     *
      * @param string $command
      * @param string $table
      * @param integer $id
@@ -109,7 +109,7 @@ class MOC_DB_Hook {
 
     /**
      * TYPO3 hook
-     * 
+     *
      * @param t3lib_TCEmain $Obj
      */
     public static function processDatamap_afterAllOperations(t3lib_TCEmain $Obj) {
