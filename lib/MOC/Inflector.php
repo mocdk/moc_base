@@ -1,7 +1,7 @@
 <?php
 /**
  * MOC Inflector Class
- * 
+ *
  * @author Christian Winther <cwin@mocsystems.com>
  * @since 13.11.2009
  * @version $Revision$
@@ -9,7 +9,7 @@
  * @lastmodified $Date$
  */
 class MOC_Inflector {
- 
+
 /**
  * Plural inflector rules
  *
@@ -77,7 +77,7 @@ class MOC_Inflector {
 			'turf' => 'turfs'
 		)
 	);
- 
+
 /**
  * Singular inflector rules
  *
@@ -128,7 +128,7 @@ class MOC_Inflector {
 			'waves' => 'wave'
 		)
 	);
- 
+
 /**
  * Words that should not be inflected
  *
@@ -149,7 +149,7 @@ class MOC_Inflector {
 		'trousers', 'trout','tuna', 'Vermontese', 'Wenchowese', 'whiting', 'wildebeest',
 		'Yengeese'
 	);
- 
+
 /**
  * Cached array identity map of pluralized words.
  *
@@ -157,7 +157,7 @@ class MOC_Inflector {
  * @access protected
  */
 	protected static $_pluralized = array();
- 
+
 /**
  * Cached array identity map of singularized words.
  *
@@ -165,7 +165,7 @@ class MOC_Inflector {
  * @access protected
  */
 	protected static $_singularized = array();
- 
+
 /**
  * Cached Underscored Inflections
  *
@@ -173,7 +173,7 @@ class MOC_Inflector {
  * @access protected
  */
 	protected static $_underscored = array();
- 
+
 /**
  * Cached Camelize Inflections
  *
@@ -181,7 +181,7 @@ class MOC_Inflector {
  * @access protected
  */
 	protected static $_camelize = array();
- 
+
 /**
  * Classify cached inflecctions
  *
@@ -189,7 +189,7 @@ class MOC_Inflector {
  * @access protected
  */
 	protected static $_classify = array();
- 
+
 /**
  * Tablized cached inflections
  *
@@ -197,7 +197,7 @@ class MOC_Inflector {
  * @access protected
  */
 	protected static $_tableize = array();
- 
+
 /**
  * Humanize cached inflections
  *
@@ -205,9 +205,9 @@ class MOC_Inflector {
  * @access protected
  */
 	protected static $_humanize = array();
-    
-    protected static $_variable = array(); 
- 
+
+    protected static $_variable = array();
+
 /**
  * Adds custom inflection $rules, of either 'plural' or 'singular' $type.
  *
@@ -225,7 +225,7 @@ class MOC_Inflector {
  */
 	public static function rules($type, $rules = array()) {
 		$type = '_'.$type;
- 
+
 		foreach ($rules as $rule => $pattern) {
 			if (is_array($pattern)) {
 			  self::$type[$rule] = array_merge($pattern, self::$type[$rule]);
@@ -233,9 +233,9 @@ class MOC_Inflector {
 			}
 		}
 		self::$type['rules'] = array_merge($rules, self::$type['rules']);
- 
+
 	}
- 
+
 /**
  * Return $word in plural form.
  *
@@ -248,30 +248,30 @@ class MOC_Inflector {
 		if (isset(self::$_pluralized[$word])) {
 			return self::$_pluralized[$word];
 		}
- 
+
 		if (!isset(self::$_plural['merged']['irregular'])) {
 			self::$_plural['merged']['irregular'] = self::$_plural['irregular'];
 		}
- 
-		if (!isset(self::$plural['merged']['uninflected'])) {
+
+		if (!isset(self::$_plural['merged']['uninflected'])) {
 			self::$_plural['merged']['uninflected'] = array_merge(self::$_plural['uninflected'], self::$_uninflected);
 		}
- 
+
 		if (!isset(self::$_plural['cacheUninflected']) || !isset(self::$_plural['cacheIrregular'])) {
 			self::$_plural['cacheUninflected'] = '(?:' . join( '|', self::$_plural['merged']['uninflected']) . ')';
 			self::$_plural['cacheIrregular'] = '(?:' . join( '|', array_keys(self::$_plural['merged']['irregular'])) . ')';
 		}
- 
+
 		if (preg_match('/(.*)\\b(' . self::$_plural['cacheIrregular'] . ')$/i', $word, $regs)) {
 			self::$_pluralized[$word] = $regs[1] . substr($word, 0, 1) . substr(self::$_plural['merged']['irregular'][strtolower($regs[2])], 1);
 			return self::$_pluralized[$word];
 		}
- 
+
 		if (preg_match('/^(' . self::$_plural['cacheUninflected'] . ')$/i', $word, $regs)) {
 			self::$_pluralized[$word] = $word;
 			return $word;
 		}
- 
+
 		foreach (self::$_plural['rules'] as $rule => $replacement) {
 			if (preg_match($rule, $word)) {
 				self::$_pluralized[$word] = preg_replace($rule, $replacement, $word);
@@ -279,7 +279,7 @@ class MOC_Inflector {
 			}
 		}
 	}
- 
+
 /**
  * Return $word in singular form.
  *
@@ -292,30 +292,30 @@ class MOC_Inflector {
 		if (isset(self::$_singularized[$word])) {
 			return self::$_singularized[$word];
 		}
- 
+
 		if (!isset(self::$_singular['merged']['uninflected'])) {
 			self::$_singular['merged']['uninflected'] = array_merge(self::$_singular['uninflected'], self::$_uninflected);
 		}
- 
+
 		if (!isset(self::$_singular['merged']['irregular'])) {
 			self::$_singular['merged']['irregular'] = array_merge(self::$_singular['irregular'], array_flip(self::$_plural['irregular']));
 		}
- 
+
 		if (!isset(self::$_singular['cacheUninflected']) || !isset(self::$_singular['cacheIrregular'])) {
 			self::$_singular['cacheUninflected'] = '(?:' . join( '|', self::$_singular['merged']['uninflected']) . ')';
 			self::$_singular['cacheIrregular'] = '(?:' . join( '|', array_keys(self::$_singular['merged']['irregular'])) . ')';
 		}
- 
+
 		if (preg_match('/(.*)\\b(' . self::$_singular['cacheIrregular'] . ')$/i', $word, $regs)) {
 			self::$_singularized[$word] = $regs[1] . substr($word, 0, 1) . substr(self::$_singular['merged']['irregular'][strtolower($regs[2])], 1);
 			return self::$_singularized[$word];
 		}
- 
+
 		if (preg_match('/^(' . self::$_singular['cacheUninflected'] . ')$/i', $word, $regs)) {
 			self::$_singularized[$word] = $word;
 			return $word;
 		}
- 
+
 		foreach (self::$_singular['rules'] as $rule => $replacement) {
 			if (preg_match($rule, $word)) {
 				self::$_singularized[$word] = preg_replace($rule, $replacement, $word);
@@ -325,7 +325,7 @@ class MOC_Inflector {
 		self::$_singularized[$word] = $word;
 		return $word;
 	}
- 
+
 /**
  * Returns the given lower_case_and_underscored_word as a CamelCased word.
  *
@@ -340,7 +340,7 @@ class MOC_Inflector {
 		}
 		return self::$_camelize[$lowerCaseAndUnderscoredWord];
 	}
- 
+
 /**
  * Returns the given camelCasedWord as an underscored_word.
  *
@@ -355,7 +355,7 @@ class MOC_Inflector {
 		}
 		return self::$_underscored[$camelCasedWord];
 	}
- 
+
 /**
  * Returns the given underscored_word_group as a Human Readable Word Group.
  * (Underscores are replaced by spaces and capitalized following words.)
@@ -371,7 +371,7 @@ class MOC_Inflector {
 		}
 		return self::$_humanize[$lowerCaseAndUnderscoredWord];
 	}
- 
+
 /**
  * Returns corresponding table name for given model $className. ("people" for the model class "Person").
  *
@@ -386,7 +386,7 @@ class MOC_Inflector {
 		}
 		return self::$_tableize[$className];
 	}
- 
+
 /**
  * Returns model class name ("Person" for the database table "people".) for given database table.
  *
@@ -395,13 +395,13 @@ class MOC_Inflector {
  * @access public
  * @static
  */
-	public static function classify($tableName) {	
+	public static function classify($tableName) {
 		if (!isset(self::$_classify[$tableName])) {
 			self::$_classify[$tableName] = MOC_Inflector::camelize(MOC_Inflector::singularize($tableName));
 		}
 		return self::$_classify[$tableName];
 	}
- 
+
 /**
  * Returns camelBacked version of an underscored string.
  *
@@ -418,7 +418,7 @@ class MOC_Inflector {
 		}
 		return self::$_variable[$string];
 	}
- 
+
 /**
  * Returns a string with all spaces converted to underscores (by default), accented
  * characters converted to non-accented characters, and non word characters removed.
@@ -435,9 +435,9 @@ class MOC_Inflector {
 			$map = $replacement;
 			$replacement = '_';
 		}
- 
+
 		$quotedReplacement = preg_quote($replacement, '/');
- 
+
 		$default = array(
 			'/à|á|å|â/' => 'a',
 			'/è|é|ê|ẽ|ë/' => 'e',
@@ -457,7 +457,7 @@ class MOC_Inflector {
 			'/\\s+/' => $replacement,
 			sprintf('/^[%s]+|[%s]+$/', $quotedReplacement, $quotedReplacement) => '',
 		);
- 
+
 		$map = array_merge($default, $map);
 		return preg_replace(array_keys($map), array_values($map), $string);
 	}
