@@ -69,7 +69,7 @@ class MOC_DB {
 		$GLOBALS['TYPO3_DB']->sql_query('COMMIT');
 	}
 
-	/** 
+	/**
 	 * Escape a value for MySQL
 	 *
 	 * @param string $string
@@ -78,7 +78,7 @@ class MOC_DB {
 	public static function escape($string) {
 	    return mysql_real_escape_string($string);
 	}
-	
+
 	/**
 	 * Change TYPO3_DB out with MOC_DB_Logger
 	 *
@@ -154,6 +154,102 @@ class MOC_DB {
 	            throw new MOC_DB_Exception(sprintf('Table %s does not have transaction support, its not an InnoDB table. Table type %s does not support transactions', $name, self::$tableInformation[$name]['Engine']));
 	        }
 	    }
+	}
+
+	public static function columnType($real) {
+		if (is_array($real)) {
+			$col = $real['name'];
+			if (isset($real['limit'])) {
+				$col .= '('.$real['limit'].')';
+			}
+			return $col;
+		}
+
+		$col = str_replace(')', '', $real);
+		$limit = self::length($real);
+		if (strpos($col, '(') !== false) {
+			list($col, $vals) = explode('(', $col);
+		}
+
+		if (in_array($col, array('date', 'time', 'datetime', 'timestamp'))) {
+			return $col;
+		}
+		if (($col == 'tinyint' && $limit == 1) || $col == 'boolean') {
+			return 'boolean';
+		}
+		if (strpos($col, 'int') !== false) {
+			return 'integer';
+		}
+		if (strpos($col, 'char') !== false || $col == 'tinytext') {
+			return 'string';
+		}
+		if (strpos($col, 'text') !== false) {
+			return 'text';
+		}
+		if (strpos($col, 'blob') !== false || $col == 'binary') {
+			return 'binary';
+		}
+		if (strpos($col, 'float') !== false || strpos($col, 'double') !== false || strpos($col, 'decimal') !== false) {
+			return 'float';
+		}
+		if (strpos($col, 'enum') !== false) {
+			return "enum($vals)";
+		}
+		return 'text';
+	}
+
+	public static function length($real) {
+		if (!preg_match_all('/([\w\s]+)(?:\((\d+)(?:,(\d+))?\))?(\sunsigned)?(\szerofill)?/', $real, $result)) {
+			trigger_error(__("FIXME: Can't parse field: " . $real, true), E_USER_WARNING);
+			$col = str_replace(array(')', 'unsigned'), '', $real);
+			$limit = null;
+
+			if (strpos($col, '(') !== false) {
+				list($col, $limit) = explode('(', $col);
+			}
+			if ($limit != null) {
+				return intval($limit);
+			}
+			return null;
+		}
+
+		$types = array(
+			'int' => 1, 'tinyint' => 1, 'smallint' => 1, 'mediumint' => 1, 'integer' => 1, 'bigint' => 1
+		);
+
+		list($real, $type, $length, $offset, $sign, $zerofill) = $result;
+		$typeArr = $type;
+		$type = $type[0];
+		$length = $length[0];
+		$offset = $offset[0];
+
+		$isFloat = in_array($type, array('dec', 'decimal', 'float', 'numeric', 'double'));
+		if ($isFloat && $offset) {
+			return $length.','.$offset;
+		}
+
+		if (($real[0] == $type) && (count($real) == 1)) {
+			return null;
+		}
+
+		if (isset($types[$type])) {
+			$length += $types[$type];
+			if (!empty($sign)) {
+				$length--;
+			}
+		} elseif (in_array($type, array('enum', 'set'))) {
+			$length = 0;
+			foreach ($typeArr as $key => $enumValue) {
+				if ($key == 0) {
+					continue;
+				}
+				$tmpLength = strlen($enumValue);
+				if ($tmpLength > $length) {
+					$length = $tmpLength;
+				}
+			}
+		}
+		return intval($length);
 	}
 
 	/**
