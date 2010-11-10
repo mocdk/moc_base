@@ -119,41 +119,12 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
             $key = array($key);
         }
 
-        $exists = true;
-
         foreach ($key as $field) {
-            $name = $this->__configVarNames($field);
-            switch (count($name)) {
-                case 1:
-                    $exists = $exists && array_key_exists($name[0], $this->data);
-                    break;
-                case 2:
-                    $exists = $exists && (array_key_exists($name[0], $this->data) && is_array($this->data[$name[0]]) && array_key_exists($name[1], $this->data[$name[0]]));
-                    break;
-                case 3:
-                    $exists = $exists && (array_key_exists($name[0], $this->data) && is_array($this->data[$name[0]]) && array_key_exists($name[1], $this->data[$name[0]]) && is_array($this->data[$name[0]][$name[1]]) && array_key_exists($name[2], $this->data[$name[0]][$name[1]]));
-                    break;
-                case 4:
-                    $exists = $exists && (array_key_exists($name[0], $this->data) && is_array($this->data[$name[0]]) && array_key_exists($name[1], $this->data[$name[0]]) && is_array($this->data[$name[0]][$name[1]]) && array_key_exists($name[2], $this->data[$name[0]][$name[1]]) &&
-                        is_array($this->data[$name[0]][$name[1]][$name[2]]) && array_key_exists($name[3], $this->data[$name[0]][$name[1]][$name[2]]));
-                    break;
-                case 5:
-                    $exists = $exists && (array_key_exists($name[0], $this->data) && is_array($this->data[$name[0]]) && array_key_exists($name[1], $this->data[$name[0]]) && is_array($this->data[$name[0]][$name[1]]) && array_key_exists($name[2], $this->data[$name[0]][$name[1]]) &&
-                        is_array($this->data[$name[0]][$name[1]][$name[2]]) && array_key_exists($name[3], $this->data[$name[0]][$name[1]][$name[3]]) && is_array($this->data[$name[0]][$name[1]][$name[2]][$name[3]]) && array_key_exists($name[4], $this->data[$name[0]][$name[1]][$name[2]][$name[3]]));
-                    break;
-                default:
-                    $exists = $exists && MOC_Array::check($this->data, $key);
-                    break;
-                    //throw new MOC_Configuration_Exception(sprintf('Unable to check if key exists. Depth is invalid ("%s")', count($name)));
-            }
-
-            // Don't bother checking multiple keys we already got a false check
-            if (!$exists) {
-                return $exists;
-            }
+			if (!MOC_Array::check($this->data, $field)) {
+				return false;
+			}
         }
-
-        return $exists;
+        return true;
     }
 
     /**
