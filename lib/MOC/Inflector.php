@@ -42,7 +42,7 @@ class MOC_Inflector {
 			'/$/' => 's',
 		),
 		'uninflected' => array(
-			'.*[nrlm]ese', '.*deer', '.*fish', '.*measles', '.*ois', '.*pox', '.*sheep', 'people'
+			'.*data', '.*[nrlm]ese', '.*deer', '.*fish', '.*measles', '.*ois', '.*pox', '.*sheep', 'people'
 		),
 		'irregular' => array(
 			'atlas' => 'atlases',
@@ -122,7 +122,7 @@ class MOC_Inflector {
 			'/s$/i' => ''
 		),
 		'uninflected' => array(
-			'.*[nrlm]ese', '.*deer', '.*fish', '.*measles', '.*ois', '.*pox', '.*sheep', '.*ss'
+			'.*data', '.*[nrlm]ese', '.*deer', '.*fish', '.*measles', '.*ois', '.*pox', '.*sheep', '.*ss'
 		),
 		'irregular' => array(
 			'waves' => 'wave'
@@ -323,6 +323,7 @@ class MOC_Inflector {
 			}
 		}
 		self::$_singularized[$word] = $word;
+		
 		return $word;
 	}
 

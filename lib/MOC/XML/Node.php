@@ -20,13 +20,13 @@ class MOC_XML_Node extends SimpleXMLElement {
      * @param boolean $sendXMLHeader Should the script send the text/xml header?
      * @return MOC_XML_Node
      */ 
-    public static function getInstance($name, $sendXMLHeader = true, $xmlHeader = true) {
+    public static function getInstance($name, $sendXMLHeader = true, $xmlHeader = true, $xmlEncoding = 'UTF-8') {
         if ($sendXMLHeader) {
             header('Content-Type: text/xml');
         }
 		$xmlBody = sprintf('<%1$s></%1$s>', $name);
 		if ($xmlHeader) {
-			$xmlBody = sprintf('<?xml version="1.0" encoding="UTF-8"?>%s', $xmlBody);
+			$xmlBody = sprintf('<?xml version="1.0" encoding="%s"?>%s', $xmlEncoding, $xmlBody);
 		}
 		
         return new MOC_XML_Node($xmlBody);
