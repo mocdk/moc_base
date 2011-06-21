@@ -43,6 +43,10 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
             return $this->data;
         }
         switch (count($name)) {
+            case 6:
+                if (isset($this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]][$name[5]])) {
+                    return $this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]][$name[5]];
+                }
             case 5:
                 if (isset($this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]])) {
                     return $this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]];
@@ -146,28 +150,72 @@ class MOC_Configuration implements ArrayAccess, Countable, Serializable, Iterato
                 }
                 break;
             case 2:
-                if (array_key_exists($name[0], $this->data) && is_array($this->data[$name[0]]) && array_key_exists($name[1], $this->data[$name[0]])) {
+                if (
+                    array_key_exists($name[0], $this->data)
+                    && is_array($this->data[$name[0]])
+                    && array_key_exists($name[1], $this->data[$name[0]])
+                ) {
                     unset($this->data[$name[0]][$name[1]]);
                     return true;
                 }
                 break;
             case 3:
-                if (array_key_exists($name[0], $this->data) && is_array($this->data[$name[0]]) && array_key_exists($name[1], $this->data[$name[0]]) && is_array($this->data[$name[0]][$name[1]]) && array_key_exists($name[2], $this->data[$name[0]][$name[1]])) {
+                if (
+                    array_key_exists($name[0], $this->data)
+                    && is_array($this->data[$name[0]])
+                    && array_key_exists($name[1], $this->data[$name[0]])
+                    && is_array($this->data[$name[0]][$name[1]])
+                    && array_key_exists($name[2], $this->data[$name[0]][$name[1]])
+                ) {
                     unset($this->data[$name[0]][$name[1]][$name[2]]);
                     return true;
                 }
                 break;
             case 4:
-                if (array_key_exists($name[0], $this->data) && is_array($this->data[$name[0]]) && array_key_exists($name[1], $this->data[$name[0]]) && is_array($this->data[$name[0]][$name[1]]) && array_key_exists($name[2], $this->data[$name[0]][$name[1]]) && array_key_exists
-                    ($name[2], $this->data[$name[0]][$name[1]][$name[2]])) {
+                if (
+                    array_key_exists($name[0], $this->data)
+                    && is_array($this->data[$name[0]])
+                    && array_key_exists($name[1], $this->data[$name[0]])
+                    && is_array($this->data[$name[0]][$name[1]])
+                    && array_key_exists($name[2], $this->data[$name[0]][$name[1]])
+                    && is_array($this->data[$name[0]][$name[1]][$name[2]])
+                    && array_key_exists($name[3], $this->data[$name[0]][$name[1]][$name[2]])
+                ) {
                     unset($this->data[$name[0]][$name[1]][$name[2]][$name[3]]);
                     return true;
                 }
                 break;
             case 5:
-                if (array_key_exists($name[0], $this->data) && is_array($this->data[$name[0]]) && array_key_exists($name[1], $this->data[$name[0]]) && is_array($this->data[$name[0]][$name[1]]) && array_key_exists($name[2], $this->data[$name[0]][$name[1]]) && array_key_exists
-                    ($name[2], $this->data[$name[0]][$name[1]][$name[2]]) && array_key_exists($name[2], $this->data[$name[0]][$name[1]][$name[2]][$name[3]])) {
+                if (
+                    array_key_exists($name[0], $this->data)
+                    && is_array($this->data[$name[0]])
+                    && array_key_exists($name[1], $this->data[$name[0]])
+                    && is_array($this->data[$name[0]][$name[1]])
+                    && array_key_exists($name[2], $this->data[$name[0]][$name[1]])
+                    && is_array($this->data[$name[0]][$name[1]][$name[2]])
+                    && array_key_exists($name[3], $this->data[$name[0]][$name[1]][$name[2]])
+                    && is_array($this->data[$name[0]][$name[1]][$name[2]][$name[3]])
+                    && array_key_exists($name[4], $this->data[$name[0]][$name[1]][$name[2]][$name[3]])
+                ) {
                     unset($this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]]);
+                    return true;
+                }
+                break;
+            case 6:
+                if (
+                    array_key_exists($name[0], $this->data)
+                    && is_array($this->data[$name[0]])
+                    && array_key_exists($name[1], $this->data[$name[0]])
+                    && is_array($this->data[$name[0]][$name[1]])
+                    && array_key_exists($name[2], $this->data[$name[0]][$name[1]])
+                    && is_array($this->data[$name[0]][$name[1]][$name[2]])
+                    && array_key_exists($name[3], $this->data[$name[0]][$name[1]][$name[2]])
+                    && is_array($this->data[$name[0]][$name[1]][$name[2]][$name[3]])
+                    && array_key_exists($name[4], $this->data[$name[0]][$name[1]][$name[2]][$name[3]])
+                    && is_array($this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]])
+                    && array_key_exists($name[5], $this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]])
+                ) {
+                    unset($this->data[$name[0]][$name[1]][$name[2]][$name[3]][$name[4]][$name[5]]);
                     return true;
                 }
                 break;
