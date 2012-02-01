@@ -99,16 +99,17 @@ class MOC_DB {
 	 * @param string $table
 	 * @param array $insert_data
 	 * @param array|null $update_data
-	 * @return boolean true If successfull else an error string
+	 * @param string $unique_field
+	 * @return boolean true If successful else an error string
 	 */
-	public static function insertOrUpdate($table, $insert_data, $update_data = null) {
+	public static function insertOrUpdate($table, $insert_data, $update_data = NULL, $unique_field = 'uid') {
 		// Insert is 100% default (we are just going to append some stuff to it later on)
 		$insert_sql = $GLOBALS['TYPO3_DB']->INSERTquery($table, $insert_data);
 
 		// Update is a bit different - we want normal UPDATE statement with a blank "condition"
 		// If no update_data is provided, just use the insert_data instead
-		
-		
+
+
 		$update_sql = $GLOBALS['TYPO3_DB']->UPDATEquery($table, '', $update_data ? $update_data : $insert_data);
 		// The "UPDATE $table SET" part is not needed, so lets remove it
 		$update_sql = str_replace(sprintf("UPDATE %s", $table), '', $update_sql);
@@ -117,23 +118,23 @@ class MOC_DB {
 		// And then remove the first 3 chars (SET in UPDATE TABLE $table -> SET <-)
 		$update_sql = substr($update_sql, 3);
 
-		
+
 		// Construct the full query
-		//6/3-2011: Mod by JE to fix problem in MySQL < 5.1.12 : the last_insert id is not updated when using this ON DUPLICATE KEY thingie. 
+		//6/3-2011: Mod by JE to fix problem in MySQL < 5.1.12 : the last_insert id is not updated when using this ON DUPLICATE KEY thingie.
 		//To fix this, we use the uid=LAST_INSERT_ID(uid) as described in http://dev.mysql.com/doc/refman/5.1/en/insert-on-duplicate.html
-		//Unfortunally, this can only be done on colums with a uid field (_mm tables does not have on), and hence we need to ask, costing us an extra query per table
-		//There is also a problem, that apperantly the trick does not work if nothing in the record changes... I cant seem to duplicate this bug however, seems to work just fine.
+		//Unfortunately, this can only be done on columns with a uid field (_mm tables does not have on), and hence we need to ask, costing us an extra query per table
+		//There is also a problem, that apparently the trick does not work if nothing in the record changes... I cant seem to duplicate this bug however, seems to work just fine.
 		$fields = self::tableFields($table);
-		if($fields['uid']) {
-			$update_sql .= ', uid=LAST_INSERT_ID(uid)';
+		if($fields[$unique_field]) {
+			$update_sql .= sprintf(', %s = LAST_INSERT_ID(%s)', $unique_field);
 		}
 		$query = sprintf('%s ON DUPLICATE KEY UPDATE %s', $insert_sql, $update_sql);
 		//print "\n\nQUERY: $query \n\n\n";
 		// And execute it
-		$GLOBALS['TYPO3_DB']->sql_query($query);		
+		$GLOBALS['TYPO3_DB']->sql_query($query);
 		// Check for errors
 		$error = MOC_DB::error();
-		
+
 		// Return true if no error happened
 		return $error === false ? true : $error;
 	}
