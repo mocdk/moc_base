@@ -29,7 +29,7 @@ class MOC_EID {
 
 	public static function createTSFE() {
 		global $TYPO3_CONF_VARS;
-		$temp_TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
+		$temp_TSFEclassName = 'tslib_fe';
 		if(!is_a($GLOBALS['TSFE'],$temp_TSFEclassName)) {
 			// Include classes necessary for initializing frontend user:
 			// We will use tslib_fe to do that:
