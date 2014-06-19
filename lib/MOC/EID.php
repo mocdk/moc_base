@@ -50,7 +50,7 @@ class MOC_EID {
 	}
 
 	/**
-	 * Get an instance of tslib_pibase
+	 * Get an instance of \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 	 * 
 	 * @param boolean $withCObject Should an cObj be attached to the \TYPO3\CMS\Frontend\Plugin\AbstractPlugin object
 	 * @return \TYPO3\CMS\Frontend\Plugin\AbstractPlugin

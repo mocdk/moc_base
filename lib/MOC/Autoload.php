@@ -49,7 +49,7 @@ class MOC_Autoload {
      * @param null|MOC_Autoload_Interface The delegate that transform class names to paths
      */
     public function addPlugin($extKey, $delegate = null) {
-        if (!t3lib_extMgm::isLoaded($extKey, false)) {
+        if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey, false)) {
             throw new MOC_Autoload_Exception(sprintf('Extension "%s" is not loaded', $extKey));
         }
         
@@ -57,7 +57,7 @@ class MOC_Autoload {
             $delegate = new MOC_Autoload_Pear();
         }
 
-        $path = t3lib_extMgm::extPath($extKey, $delegate->getBaseFolder());
+        $path = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey, $delegate->getBaseFolder());
         if (!file_exists($path)) {
             throw new MOC_Autoload_Exception(sprintf('Extension "%s" does not have a "%s" directory (%s)', $extKey, $delegate->getBaseFolder(), $path));
         }

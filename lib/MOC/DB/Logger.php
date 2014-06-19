@@ -1,13 +1,13 @@
 <?php
 /**
- * Overwrite most functions in t3lib_DB to provide logging facility
+ * Overwrite most functions in \TYPO3\CMS\Core\Database\DatabaseConnection to provide logging facility
  *
  * May not work with all versions of TYPO3
  *
  * @author Christian Winther <cwin@mocsystems.com>
  * @since 16.08.2010
  */
-class MOC_DB_Logger extends t3lib_DB {
+class MOC_DB_Logger extends \TYPO3\CMS\Core\Database\DatabaseConnection {
 	protected $queries = array();
 
 	function getAllQueriesRaw() {
