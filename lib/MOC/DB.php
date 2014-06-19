@@ -34,6 +34,20 @@ class MOC_DB {
 	}
 
 	/**
+	 * @param array $tableInformation
+	 */
+	public static function setTableInformation($tableInformation) {
+		self::$tableInformation = $tableInformation;
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getTableInformation() {
+		return self::$tableInformation;
+	}
+
+	/**
 	 * Remove keys from $data that is not present as a column in $table
 	 *
 	 * @param string $table
@@ -151,7 +165,7 @@ class MOC_DB {
 	 * @param array|string $names
 	 */
 	public static function checkTransactionSupport($names) {
-	    if (!is_array($names)) {
+		if (!is_array($names)) {
 	        $names = array($names);
 	    }
 
@@ -162,9 +176,10 @@ class MOC_DB {
 	            throw new MOC_DB_Exception(sprintf('Cant check table %s for transaction support, its not present in self::$tableInformation. (Maybe the table doesnt exist)', $name));
 	        }
 
-	        if (self::$tableInformation[$name]['Engine'] !== 'InnoDB') {
+			// @TODO: Why is this here??? NOTE: Is it specific InnoDB stuff???
+	        /*if (self::$tableInformation[$name]['Engine'] !== 'InnoDB') {
 	            throw new MOC_DB_Exception(sprintf('Table %s does not have transaction support, its not an InnoDB table. Table type %s does not support transactions', $name, self::$tableInformation[$name]['Engine']));
-	        }
+	        }*/
 	    }
 	}
 
@@ -270,12 +285,12 @@ class MOC_DB {
 	 * @return array
 	 */
 	public static function loadTableInformation() {
-	    if (empty(self::$tableInformation)) {
-	        $resource = $GLOBALS['TYPO3_DB']->sql_query('SHOW TABLE STATUS');
-            while ($record = mysql_fetch_array($resource)) {
-                self::$tableInformation[$record['Name']] = $record;
-            }
-	    }
+		if (empty(self::$tableInformation)) {
+			$resource = $GLOBALS['TYPO3_DB']->sql_query('SHOW TABLE STATUS');
+			while ($record = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resource)) {
+				self::$tableInformation[$record['Name']] = $record;
+			}
+		}
 	    return self::$tableInformation;
 	}
 
