@@ -1,13 +1,13 @@
 <?php
 /**
  * MOC EID helper
- * 
+ *
  * @author Christian Winther <cwin@mocsystems.com>
  * @since 13.11.2009
  * @version $Revision$
  * @modifiedby $LastChangedBy$
  * @lastmodified $Date$
- */ 
+ */
 class MOC_EID {
 	public static function initFeUser()	{
 		self::connectDB();
@@ -42,7 +42,7 @@ class MOC_EID {
 		self::initFeUser();
 		self::createTSFE();
 
-		$GLOBALS['TSFE']->sys_page = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\TYPO3\CMS\Frontend\Page\PageRepository');
+		$GLOBALS['TSFE']->sys_page = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 		$GLOBALS['TSFE']->initTemplate();
 		$GLOBALS['TSFE']->determineId();
 		$GLOBALS['TSFE']->getConfigArray();
@@ -51,10 +51,10 @@ class MOC_EID {
 
 	/**
 	 * Get an instance of \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
-	 * 
+	 *
 	 * @param boolean $withCObject Should an cObj be attached to the \TYPO3\CMS\Frontend\Plugin\AbstractPlugin object
 	 * @return \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
-	 */ 
+	 */
 	public static function getInstanceOfPiBase($withCObject = TRUE) {
 		static $PiBase;
 
